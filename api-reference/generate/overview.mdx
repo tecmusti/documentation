@@ -1,0 +1,36 @@
+---
+title: "Generate overview"
+description: "How the shared /generate endpoint routes to image or video."
+sidebarTitle: "Overview"
+---
+
+Image and video generation share the **same** `POST /generate` endpoint. Which validation path runs is decided by the tool the `model` you send belongs to — nothing else in the payload matters for routing.
+
+<CardGroup cols={2}>
+  <Card title="Image generation" icon="image" href="/api-reference/generate/image">
+    Queue an AI image with a scene and reference product image.
+  </Card>
+
+  <Card title="Video generation" icon="video" href="/api-reference/generate/video">
+    Queue a short AI video with a prompt or scene.
+  </Card>
+</CardGroup>
+
+## Async model
+
+Every successful `POST /generate` returns immediately with `status: "queued"` and a `task_id`.
+
+<Warning>
+  You **must** save `task_id` — it's the only handle to poll [`GET /status`](/api-reference/generate/status), and it is never shown again.
+</Warning>
+
+Typical completion times:
+
+- **Image:** 10–100 seconds
+- **Video:** ~1 minute (noticeably longer than image)
+
+Poll every few seconds — don't long-poll.
+
+## Not implemented
+
+A product-description tool is planned but **not built yet**. Don't send `model` values for it.

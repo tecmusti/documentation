@@ -1,0 +1,35 @@
+---
+title: "Revoke API key"
+description: "Permanently revoke an API key."
+sidebarTitle: "Revoke"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY
+</Info>
+
+## `DELETE /api-keys/{id}`
+
+Revocation is permanent — there is no un-revoke.
+
+### Path parameters
+
+<ParamField path="id" type="integer" required>
+  The numeric `id` returned from [`POST /api-keys`](/api-reference/api-keys/create) or [`GET /api-keys`](/api-reference/api-keys/list).
+</ParamField>
+
+### Response
+
+```json
+{ "success": true, "data": { "message": "api key revoked" } }
+```
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 404 | `not_found` | `id` doesn't exist, belongs to another account, or is already revoked (indistinguishable on purpose). |
+
+<Note>
+  If a key leaks, revoke it here immediately after issuing its replacement.
+</Note>

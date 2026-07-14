@@ -1,0 +1,39 @@
+---
+title: "List API keys"
+description: "List all API keys on the account (metadata only)."
+sidebarTitle: "List"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY
+</Info>
+
+## `GET /api-keys`
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 4,
+      "name": "Zapier integration",
+      "key_prefix": "sk_live_9e6e",
+      "last_used_at": null,
+      "revoked_at": null,
+      "date_created": "2026-07-05T12:31:07.941725+03:00"
+    }
+  ]
+}
+```
+
+<Note>
+  Only `key_prefix` is returned here — the full secret is **never** returned again after creation. Use `key_prefix` to identify which key is which.
+
+  An account with no keys returns `"data": []`, not an error.
+</Note>
+
+### Fields
+
+     

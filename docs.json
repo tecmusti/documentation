@@ -52,7 +52,6 @@
             "icon": "wallet",
             "pages": [
               "api-reference/wallet/balance",
-              "api-reference/wallet/topup",
               "api-reference/wallet/payment-methods",
               "api-reference/wallet/auto-topup-get",
               "api-reference/wallet/auto-topup-set",
@@ -63,7 +62,16 @@
             "group": "API Keys",
             "icon": "key",
             "pages": [
-              "api-reference/api-keys/create"
+              "api-reference/api-keys/create",
+              "api-reference/api-keys/list",
+              "api-reference/api-keys/revoke"
+            ]
+          },
+          {
+            "group": "Generate",
+            "icon": "sparkles",
+            "pages": [
+              "api-reference/generate/overview"
             ]
           }
         ]

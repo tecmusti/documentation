@@ -1,0 +1,65 @@
+---
+title: "Poll status"
+description: "Check whether a queued generation is done."
+sidebarTitle: "Status"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY · Instant — reads only this backend's own record; does not call the upstream provider live.
+</Info>
+
+## `GET /status?taskId=...`
+
+### Query parameters
+
+<ParamField query="taskId" type="string" required>
+  The `task_id` returned from [`POST /generate`](/api-reference/generate/image).
+</ParamField>
+
+### Responses
+
+<CodeGroup>
+
+```json Pending
+{ "success": true, "data": { "status": "pending" } }
+```
+
+```json Completed
+{
+  "success": true,
+  "data": {
+    "status": "completed",
+    "result_urls": [
+      "https://example-files.s3.fr-par.scw.cloud/generations/6bfd652d4c31261ffb8ed3424ac2775e/88a2d6cd3219e08ee64ec9f60e5735ec.jpeg"
+    ]
+  }
+}
+```
+
+```json Failed
+{
+  "success": true,
+  "data": {
+    "status": "failed",
+    "error_message": "..."
+  }
+}
+```
+
+</CodeGroup>
+
+<Note>
+  `result_urls` point at this backend's own object storage (public-read) — never the AI provider's temporary URLs. They are stable and safe to reference from your app.
+</Note>
+
+### Polling guidance
+
+<Warning>
+  Real completion typically takes **10–100 seconds**. Poll every few seconds — don't long-poll or hammer the endpoint.
+</Warning>
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 404 | `not_found` | Unknown `taskId`, or a `taskId` belonging to a different account. |

@@ -1,0 +1,106 @@
+---
+title: "Generate image"
+description: "Queue an AI image generation."
+sidebarTitle: "Image"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY · **Async** — returns `queued` immediately.
+</Info>
+
+## `POST /generate`
+
+Send a `model` that belongs to the image tool. The endpoint queues the job and returns a `task_id` to poll.
+
+### Request
+
+```json
+{
+  "model": "nano-banana",
+  "category": "womens-clothing",
+  "aspect-ratio": "1:1",
+  "resolution": "1K",
+  "scene": "59b4a671-1b90-453e-92c3-a28ceee177af",
+  "image_url": "https://static.example.com/thumb/product-86713.jpg",
+  "additional_data": {
+    "product_name": "White Long Dress",
+    "material": "denim, cotton"
+  }
+}
+```
+
+### Body parameters
+
+<ParamField body="model" type="string" required>
+  The model's endpoint value (**not** a tier name). Currently seeded values:
+
+  - `nano-banana` — economic tier
+  - `nano-banana-2` — plus tier
+</ParamField>
+
+<ParamField body="category" type="string" required>
+  A `PR_Categories.Slug`. Currently seeded: `womens-clothing`, `mens-clothing`.
+</ParamField>
+
+<ParamField body="aspect-ratio" type="string" required>
+  <Warning>
+    The key is **hyphenated** (`aspect-ratio`), not camelCase — not a typo.
+  </Warning>
+
+  Accepts either `AxB` or `A:B` form, e.g. `1:1`, `3:2`, `16x9`. Valid ratios depend on the model.
+</ParamField>
+
+<ParamField body="resolution" type="string" required>
+  Depends on the model:
+
+  - `nano-banana` — `1K` only
+  - `nano-banana-2` — `1K`, `2K`, or `4K`
+</ParamField>
+
+<ParamField body="scene" type="string (uuid)">
+  A `scene_id` from [`GET /scenes`](/api-reference/scenes/list). Send **exactly one** of `scene` or `sceneId`.
+
+  <Note>
+    Despite the field name, this is a UUID — not a slug.
+  </Note>
+</ParamField>
+
+<ParamField body="sceneId" type="integer">
+  The internal numeric id of a scene. Send **exactly one** of `scene` or `sceneId`.
+</ParamField>
+
+<ParamField body="image_url" type="string" required>
+  Public URL to the reference product image.
+</ParamField>
+
+<ParamField body="additional_data" type="object">
+  Optional flat object of string:string pairs. Each entry is prepended to the final prompt as a `Title Case Key: Title Case Value` line, in insertion order.
+
+  Every value **must** be a JSON string. Omit the field or send `{}` / `null` for "nothing to add".
+</ParamField>
+
+### Response — 200
+
+```json
+{
+  "success": true,
+  "data": { "status": "queued", "task_id": "6bfd652d4c31261ffb8ed3424ac2775e" }
+}
+```
+
+<Warning>
+  Save `task_id` immediately — it's the only handle to poll [`GET /status`](/api-reference/generate/status).
+</Warning>
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_input` | Missing required field; both `scene` and `sceneId` missing; `aspect-ratio`/`resolution` invalid for the model; `category` not linked to the scene; no pricing exists for `model` \+ `resolution`; or `additional_data` isn't a flat object of strings. |
+| 402 | `insufficient_credits` | Balance too low — top up via [`POST /wallet/topup`](/api-reference/wallet/topup). |
+| 404 | `not_found` | Unknown `model` (must be a real endpoint, not a tier name), or scene doesn't exist / isn't yours. |
+| 502 | `provider_error` | The upstream generation provider failed. |
+
+<Note>
+  Seeded values can drift. Call [`GET /scenes`](/api-reference/scenes/list) to discover currently-valid scenes for a given `model` \+ `category`.
+</Note>

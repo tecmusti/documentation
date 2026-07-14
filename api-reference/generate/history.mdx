@@ -1,0 +1,89 @@
+---
+title: "Generation history"
+description: "Paginated history of generations with credit ledger entries."
+sidebarTitle: "History"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY
+</Info>
+
+## `GET /generations`
+
+### Query parameters
+
+<ParamField query="page" default="1" type="integer">
+  1-indexed page number. Must be a positive integer.
+</ParamField>
+
+<ParamField query="limit" default="250" type="integer">
+  Page size, between **1 and 250**.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Optional filter. One of `pending`, `completed`, `failed`.
+</ParamField>
+
+### Example
+
+```text
+GET /generations?status=failed&limit=20&page=2
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "generations": [
+      {
+        "task_id": "bcfeabcb2195e728c29369dc29c9cc32",
+        "status": "completed",
+        "tool": { "id": 1, "name": "Image Generation", "slug": "image" },
+        "model": {
+          "id": 1,
+          "slug": "economic",
+          "provider": "Kie",
+          "endpoint": "nano-banana",
+          "name": { "en": "Economic", "tr": "Ekonomik" }
+        },
+        "result_urls": [
+          "https://example-files.s3.fr-par.scw.cloud/generations/bcfeabcb2195e728c29369dc29c9cc32/5587d45a00b7b4dd2fb441c1edee7ac3.png"
+        ],
+        "credits_logs": [
+          { "type": "reserve", "amount": "-4", "balance_after": "10992.5", "date_created": "2026-07-10T14:45:50.443061+03:00" },
+          { "type": "spend",   "amount": "0",  "balance_after": "10992.5", "date_created": "2026-07-10T14:46:09.371124+03:00" }
+        ],
+        "date_created": "2026-07-10T14:45:50.443061+03:00"
+      }
+    ],
+    "page": 2,
+    "per_page": 20,
+    "total": 37
+  }
+}
+```
+
+### Response notes
+
+- **`per_page`** always reflects the `limit` actually used — use it for pagination math. Never assume 250.
+- **`tool` and `model`** are point-in-time snapshots stored on the generation itself, **except** `model.name`, which is looked up live and is absent entirely if the model has no translations.
+- **`result_urls`** is present only when `status: "completed"`.
+- **`error_message`** is present only when `status: "failed"`.
+
+### Reading `credits_logs`
+
+The ledger rows tell you exactly what happened to the wallet:
+
+| Rows on a generation | Meaning |
+| --- | --- |
+| `reserve` only | Still pending — credits are held. |
+| `reserve` \+ `spend` | Completed — charge was kept. |
+| `reserve` \+ `release` | Failed / cancelled — credits were refunded. |
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_input` | `page` not a positive integer, `limit` outside 1–250, or `status` not one of the three allowed values. |

@@ -31,7 +31,21 @@
           "icon": "newspaper"
         }
       ]
-    }
+    },
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "index",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "API Reference",
+        "icon": "code",
+        "pages": []
+      }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",

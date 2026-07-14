@@ -39,9 +39,6 @@ Send a `model` that belongs to the image tool. The endpoint queues the job and r
   - `estudjo/uncensored` — uncensored tier
 </ParamField>
 
-<ParamField body="category" type="string" required>
-</ParamField>
-
 <ParamField body="aspect-ratio" type="string" required>
   <Warning>
     The key is **hyphenated** (`aspect-ratio`), not camelCase — not a typo.
@@ -63,10 +60,6 @@ Send a `model` that belongs to the image tool. The endpoint queues the job and r
   <Note>
     Despite the field name, this is a UUID — not a slug.
   </Note>
-</ParamField>
-
-<ParamField body="sceneId" type="integer">
-  The internal numeric id of a scene. Send **exactly one** of `scene` or `sceneId`.
 </ParamField>
 
 <ParamField body="image_url" type="string" required>

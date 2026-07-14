@@ -1,0 +1,69 @@
+---
+title: "Create scene"
+description: "Create a new user-owned scene (prompt template)."
+sidebarTitle: "Create"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY
+</Info>
+
+## `POST /scenes`
+
+### Request
+
+```json
+{
+  "models": ["estudjo/economic"],
+  "categories": ["womens-clothing"],
+  "name": "Bright Minimalist Studio",
+  "prompt": "<p>A <b>bright</b> minimalist studio with soft daylight</p>",
+  "description": "optional short description"
+}
+```
+
+### Body parameters
+
+<ParamField body="models" type="string[]" required>
+  Array of `PR_AI_Models.Endpoint` values — the same values [`POST /generate`](/api-reference/generate/image) accepts for `model`. **Not** a tier name. **At least one** required.
+</ParamField>
+
+<ParamField body="categories" type="string[]" required>
+  Array of `PR_Categories.Slug` values. **At least one** required.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  **Minimum 5 characters.**
+</ParamField>
+
+<ParamField body="prompt" type="string" required>
+  The prompt body. HTML is auto-converted to Markdown. Plain text and Markdown are stored as-is.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Optional short description. Defaults to `""`.
+</ParamField>
+
+<Note>
+  `scene_id` is always generated server-side — never caller-supplied.
+</Note>
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "name": "Bright Minimalist Studio",
+    "scene_id": "7c1e2f4a-9b3d-4e5f-8a6b-1c2d3e4f5a6b",
+    "type": "user_created"
+  }
+}
+```
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_input` | `name` \< 5 chars, `prompt` empty, `models` or `categories` empty, or a `categories` slug matched nothing. |
+| 404 | `not_found` | A `models` endpoint matched no known model. |

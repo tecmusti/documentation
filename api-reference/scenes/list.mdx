@@ -1,0 +1,78 @@
+---
+title: "List scenes"
+description: "List predefined and your own scenes with optional filters."
+sidebarTitle: "List"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY
+</Info>
+
+A **scene** is a reusable prompt template. Use its `scene_id` in the `scene` field of [`POST /generate`](/api-reference/generate/image).
+
+<Note>
+  Every scene — predefined or user-created — is identified solely by `scene_id` (an opaque UUID). There is no `slug` field and no numeric `id` in this API's responses.
+</Note>
+
+## `GET /scenes`
+
+### Query parameters
+
+<ParamField query="category" type="string">
+  A `PR_Categories.Slug` filter (e.g. `womens-clothing`).
+</ParamField>
+
+<ParamField query="model" type="string">
+  A `PR_AI_Models.Endpoint` filter — the **same value** [`POST /generate`](/api-reference/generate/image)'s own `model` field takes (e.g. `estudjo/economic`, `estudjo/economic-video`). URL-encode the `/`.
+
+  <Warning>
+    This is the endpoint, not a tier name like `economic` / `plus`.
+  </Warning>
+</ParamField>
+
+<ParamField query="type" type="string">
+  Optional. The **only** accepted value is `user_created`, which restricts the response to your own scenes (dropping predefined ones). Any other value returns `400 invalid_input`.
+</ParamField>
+
+<ParamField query="page" default="1" type="integer">
+  1-indexed page number.
+</ParamField>
+
+<ParamField query="limit" default="250" type="integer">
+  Page size, between **1 and 250**.
+</ParamField>
+
+### Example
+
+```text
+GET /scenes?category=womens-clothing&model=estudjo%2Feconomic&page=1&limit=50&type=user_created
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "scenes": [
+      { "name": "Lit-Modern Room",         "scene_id": "54fde974-7b3a-4cda-bec3-b82aed8ddb32", "type": "predefined" },
+      { "name": "Grand Historic Interior", "scene_id": "59b4a671-1b90-453e-92c3-a28ceee177af", "type": "user_created" }
+    ],
+    "page": 1,
+    "per_page": 250,
+    "total": 2
+  }
+}
+```
+
+<Note>
+  Only `name`, `scene_id`, and `type` are returned here — call [`GET /scenes/{idOrSceneID}`](/api-reference/scenes/get) for the rest (for user-created scenes only).
+
+  An out-of-range `page` returns `"scenes": []` with `total` still populated — not an error.
+</Note>
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_input` | `page` not a positive integer, `limit` outside 1–250, or `type` any value other than `user_created`. |

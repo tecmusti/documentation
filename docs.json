@@ -72,6 +72,17 @@
               "api-reference/generate/status",
               "api-reference/generate/history"
             ]
+          },
+          {
+            "group": "Scenes",
+            "icon": "image",
+            "pages": [
+              "api-reference/scenes/list",
+              "api-reference/scenes/get",
+              "api-reference/scenes/create",
+              "api-reference/scenes/update",
+              "api-reference/scenes/archive"
+            ]
           }
         ]
       }

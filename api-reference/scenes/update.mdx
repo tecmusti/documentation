@@ -1,0 +1,53 @@
+---
+title: "Update scene"
+description: "Update the name, description, or prompt of a scene you own."
+sidebarTitle: "Update"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY · Caller must own the scene (must be `user_created`, not archived).
+</Info>
+
+## `PUT /scenes/{idOrSceneID}`
+
+<Warning>
+  `models`, `categories`, and `scene_id` **cannot be changed** here — only `name`, `description`, and `prompt`. `scene_id` is permanent from creation.
+</Warning>
+
+### Path parameters
+
+<ParamField path="idOrSceneID" type="string | integer" required>
+  Either the `scene_id` UUID or the internal numeric id.
+</ParamField>
+
+### Request
+
+```json
+{
+  "name": "Bright Minimalist Studio v2",
+  "description": "updated",
+  "prompt": "Plain text prompt, no HTML."
+}
+```
+
+Same validation rules as [`POST /scenes`](/api-reference/scenes/create).
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "name": "Bright Minimalist Studio v2",
+    "scene_id": "7c1e2f4a-9b3d-4e5f-8a6b-1c2d3e4f5a6b",
+    "type": "user_created"
+  }
+}
+```
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 400 | `invalid_input` | Same as create — `name` \< 5 chars, `prompt` empty, etc. |
+| 404 | `not_found` | Doesn't exist, belongs to another account, is `predefined`, or is archived — all indistinguishable. |

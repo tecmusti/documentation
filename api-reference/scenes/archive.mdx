@@ -1,0 +1,41 @@
+---
+title: "Archive scene"
+description: "Soft-delete a scene you own."
+sidebarTitle: "Archive"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY · Caller must own the scene (must be `user_created`, not already archived).
+</Info>
+
+## `DELETE /scenes/{idOrSceneID}`
+
+<Warning>
+  **This is a soft delete.** The scene is removed from [`GET /scenes`](/api-reference/scenes/list) and every other scene route (`GET`, `PUT`, and `POST /generate` when it references this scene) will return `404 not_found` for it — same as a scene that never existed.
+
+  There is **no hard delete** and **no restore endpoint**.
+</Warning>
+
+### Path parameters
+
+<ParamField path="idOrSceneID" type="string | integer" required>
+  Either the `scene_id` UUID or the internal numeric id.
+</ParamField>
+
+### Example
+
+```text
+DELETE /scenes/7c1e2f4a-9b3d-4e5f-8a6b-1c2d3e4f5a6b
+```
+
+### Response
+
+```json
+{ "success": true, "data": { "status": "archived" } }
+```
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 404 | `not_found` | Doesn't exist, belongs to another account, is `predefined`, or is already archived — all indistinguishable. |

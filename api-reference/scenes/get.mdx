@@ -1,0 +1,49 @@
+---
+title: "Get scene"
+description: "Fetch full details of one user-created scene."
+sidebarTitle: "Get"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY · `user_created` scenes only.
+</Info>
+
+## `GET /scenes/{idOrSceneID}`
+
+<Warning>
+  This endpoint returns detail for **`user_created`** scenes only. A `predefined` scene returns `404 not_found` (you're assumed to already have predefined scenes' full data). An **archived** (soft-deleted) scene also 404s.
+</Warning>
+
+### Path parameters
+
+<ParamField path="idOrSceneID" type="string | integer" required>
+  Either the `scene_id` UUID or the internal numeric id.
+</ParamField>
+
+### Example
+
+```text
+GET /scenes/59b4a671-1b90-453e-92c3-a28ceee177af
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "name": "Bright Minimalist Studio",
+    "scene_id": "59b4a671-1b90-453e-92c3-a28ceee177af",
+    "description": "optional short description",
+    "prompt": "A bright minimalist studio with soft daylight"
+  }
+}
+```
+
+`description` is `""` if unset.
+
+### Errors
+
+| Status | `error.code` | Meaning |
+| --- | --- | --- |
+| 404 | `not_found` | Doesn't exist, belongs to another account, is `predefined`, is archived, or `{idOrSceneID}` isn't shaped like a number or a UUID at all — all indistinguishable on purpose. |

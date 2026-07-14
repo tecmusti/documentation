@@ -1,0 +1,30 @@
+---
+title: "Health check"
+description: "Liveness and database reachability probe."
+---
+
+<Info>
+  **Tier:** 🌐 PUBLIC — no credential required. Suitable for uptime and liveness checks.
+</Info>
+
+## `GET /healthz`
+
+### Response — 200
+
+```json
+{ "success": true, "data": { "db": "ok" } }
+```
+
+### Response — 500
+
+Returned when the backend is temporarily unavailable.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "db_unavailable",
+    "message": "database is unreachable"
+  }
+}
+```

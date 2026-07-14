@@ -1,0 +1,36 @@
+---
+title: "Errors"
+description: "Error codes returned by the API and how to handle them."
+---
+
+All errors follow the [shared response envelope](/api-reference/introduction#response-envelope). Branch on `error.code` — never on `error.message`.
+
+## Common error codes
+
+| HTTP | `error.code` | When it happens |
+| --- | --- | --- |
+| 400 | `invalid_input` | A required field is missing, or a value is out of range/shape. |
+| 401 | _(auth failure)_ | Missing or invalid `X-Api-Key`. |
+| 402 | `insufficient_credits` | Wallet balance is too low for the requested generation. |
+| 404 | `not_found` | Resource doesn't exist, belongs to another account, or is archived (indistinguishable on purpose). |
+| 429 | _(rate limited)_ | Too many requests — back off and retry. |
+| 500 | `db_unavailable` | Backend temporarily unavailable (see [`GET /healthz`](/api-reference/health)). |
+| 502 | `provider_error` | Upstream generation provider failed. |
+
+## Handling `insufficient_credits`
+
+When you receive `402 insufficient_credits`, top up the wallet with [`POST /wallet/topup`](/api-reference/wallet/topup) or rely on [auto-topup](/api-reference/wallet/auto-topup-get) if configured.
+
+## Handling `provider_error`
+
+`502 provider_error` means the upstream AI provider failed — this includes cases where a merged system \+ scene/prompt is too long for the provider to accept. Retry with a shorter prompt or a different scene.
+
+## Handling `not_found`
+
+A `404 not_found` is deliberately ambiguous — it doesn't distinguish between:
+
+- The resource never existed.
+- It belongs to a different account.
+- It has been revoked or archived (soft-deleted).
+
+This is intentional to prevent enumeration attacks. If you're sure the ID is correct, assume the resource is unavailable to your account.

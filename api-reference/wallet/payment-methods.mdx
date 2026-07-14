@@ -1,0 +1,48 @@
+---
+title: "List payment methods"
+description: "List saved cards and other payment methods."
+sidebarTitle: "Payment methods"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY · ⚠️ **SENSITIVE**
+</Info>
+
+## `GET /wallet/payment-methods`
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "payment_methods": [
+      {
+        "payment_method_id": "pm_1TrRXJ4B5rHPrz57h5VULXud",
+        "brand": "amex",
+        "last4": "0005",
+        "exp": 202611,
+        "is_default": false
+      },
+      {
+        "payment_method_id": "pm_1TrRaD4B5rHPrz57taFxOIZ2",
+        "brand": "link",
+        "last4": "",
+        "exp": 0,
+        "is_default": false
+      }
+    ]
+  }
+}
+```
+
+### Notes
+
+- Every Stripe payment-method type is listed — not just cards. Non-card methods (e.g. Link) may have empty `last4` and `exp: 0`.
+- `exp` is `YYYYMM` (e.g. `202611` for November 2026) — **not** `MM/YY`.
+
+<Warning>
+  **Limitation:** `is_default` is always `false` today — default-payment-method syncing is not wired up yet. Don't rely on this flag.
+</Warning>
+
+Use a `payment_method_id` returned here with [`POST /wallet/auto-topup`](/api-reference/wallet/auto-topup-set) to set the auto-topup card.

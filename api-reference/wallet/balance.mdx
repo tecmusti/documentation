@@ -1,0 +1,23 @@
+---
+title: "Get balance"
+description: "Fetch the current credit balance on the wallet."
+sidebarTitle: "Get balance"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY
+</Info>
+
+## `GET /wallet/balance`
+
+### Response
+
+```json
+{ "success": true, "data": { "balance": "96.00" } }
+```
+
+<Note>
+  `balance` is a decimal-as-string. It's safe to display directly, but avoid client-side arithmetic on it if precision matters — parse it with a decimal library instead of a native float.
+</Note>
+
+1 credit = **\$0.01**.

@@ -1,0 +1,37 @@
+---
+title: "Get auto-topup settings"
+description: "Fetch the current auto-topup configuration."
+sidebarTitle: "Auto-topup (get)"
+---
+
+<Info>
+  **Tier:** 🔑 API KEY · ⚠️ **SENSITIVE**
+</Info>
+
+## `GET /wallet/auto-topup`
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "enabled": true,
+    "threshold_credits": "5",
+    "amount_credits": "1000",
+    "payment_method_id": "pm_1TrRXJ4B5rHPrz57h5VULXud",
+    "last_attempt_at": null,
+    "last_attempt_status": ""
+  }
+}
+```
+
+### Fields
+
+     
+
+<Note>
+  All fields are zero-valued if auto-topup has never been configured. `last_attempt_at` and `last_attempt_status` populate only after at least one auto-topup execution has occurred.
+</Note>
+
+See also: [`POST /wallet/auto-topup`](/api-reference/wallet/auto-topup-set) to enable or disable.

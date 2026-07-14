@@ -43,7 +43,30 @@
       {
         "group": "API Reference",
         "icon": "code",
-        "pages": []
+        "pages": [
+          "api-reference/authentication",
+          "api-reference/errors",
+          "api-reference/health",
+          {
+            "group": "Wallet",
+            "icon": "wallet",
+            "pages": [
+              "api-reference/wallet/balance",
+              "api-reference/wallet/topup",
+              "api-reference/wallet/payment-methods",
+              "api-reference/wallet/auto-topup-get",
+              "api-reference/wallet/auto-topup-set",
+              "api-reference/wallet/portal"
+            ]
+          },
+          {
+            "group": "API Keys",
+            "icon": "key",
+            "pages": [
+              "api-reference/api-keys/create"
+            ]
+          }
+        ]
       }
     ]
   },
